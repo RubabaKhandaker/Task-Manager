@@ -2,15 +2,10 @@ import React, { useState } from "react";
 import {
 
     useQuery,
-
     useMutation,
-
     gql,
-
     ApolloProvider,
-
     ApolloClient,
-
     InMemoryCache,
 
 } from "@apollo/client";
@@ -24,9 +19,7 @@ const GET_TASKS = gql`
         tasks {
 
             id
-
             title
-
             description
 
         }
@@ -41,9 +34,7 @@ const CREATE_TASK = gql`
         createTask(title: $title, description: $description) {
 
             id
-
             title
-
             description
 
         }
@@ -67,9 +58,7 @@ const UPDATE_TASK = gql`
         updateTask(id: $id, title: $title, description: $description) {
 
             id
-
             title
-
             description
 
         }
@@ -81,19 +70,13 @@ const UPDATE_TASK = gql`
 function App() {
 
     const { loading, error, data } = useQuery(GET_TASKS);
-
     const [TaskCreate] = useMutation(CREATE_TASK);
-
     const [TaskDelete] = useMutation(DELETE_TASK);
-
     const [TaskUpdate] = useMutation(UPDATE_TASK);
  
-
     const [taskNew, setTaskNew] = useState({ title: "", description: "" });
  
-
     if (loading) return <p>It's loading, this may take a second...</p>;
-
     if (error) return <p>Uh-Oh, error: {error.message}</p>;
  
 
@@ -102,7 +85,6 @@ function App() {
         TaskCreate({
 
             variables: taskNew,
-
             refetchQueries: [{ query: GET_TASKS }],
 
         });
@@ -117,7 +99,6 @@ function App() {
         TaskDelete({
 
             variables: { id },
-
             refetchQueries: [{ query: GET_TASKS }],
 
         });
@@ -130,7 +111,6 @@ function App() {
         TaskUpdate({
 
             variables: { id, title, description },
-
             refetchQueries: [{ query: GET_TASKS }],
 
         });
@@ -169,9 +149,7 @@ function App() {
                 <input
 
                     type="text"
-
                     placeholder="Describe your task!"
-
                     value={taskNew.description}
 
                     onChange={(e) =>
@@ -211,7 +189,6 @@ function App() {
                                     const updatedTitle = prompt(
 
                                         "Enter your new task title:",
-
                                         task.title
 
                                     );
@@ -219,7 +196,6 @@ function App() {
                                     const updatedDescription = prompt(
 
                                         "Enter your new task description:",
-
                                         task.description
 
                                     );
@@ -227,9 +203,7 @@ function App() {
                                     handleTaskUpdate(
 
                                         task.id,
-
                                         updatedTitle,
-
                                         updatedDescription
 
                                     );
