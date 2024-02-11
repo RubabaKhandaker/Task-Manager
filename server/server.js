@@ -1,157 +1,158 @@
-const { buildSchema } = require('graphql');
-const cors = require('cors');
-const express = require('express');
-const { graphqlHTTP } = require('express-graphql');
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
-// mongodb set-up -- need help with kunal 
-mongoose.connect('mongodb://localhost:27017/', { useNewUrlParser: true, useUnifiedTopology: true });
-const connection = mongoose.connection;
+const { buildSchema } = require("graphql");
+const express = require("express");
+const { graphqlHTTP } = require("express-graphql");
+const cors = require("cors");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
-connection.once('open', () => {
+const myTaskApp = express();
+myTaskApp.use(cors());
 
-  console.log('MongoDB database connection established successfully');
+// user storage in memory
+const appUsers = [];
 
-});
-
-// user model
-const Schema = mongoose.Schema;
-const userSchema = new Schema({
-
-  username: String,
-  email: String,
-  password: String,
-
-});
-const User = mongoose.model('User', userSchema);
+// jwt secret key
+const secretKey = process.env.JWT_SECRET || 'default_secret';
 
 // graphql schemas
-const AuthDataType = new buildSchema(`
+const schema = buildSchema(`
+
+  type Task {
+
+    id: ID!
+    title: String!
+    description: String!
+
+  }
+
+  type User {
+
+    id: ID!
+    username: String!
+    email: String!
+
+  }
 
   type AuthData {
 
-    userId: ID!
     token: String!
-    tokenExpiration: Int!
+    user: User!
 
   }
-`);
 
-const RootQueryType = new buildSchema(`
-
-  type RootQuery {
+  type Query {
 
     tasks: [Task]
+    users: [User]
 
   }
-
-`);
-
-const MutationType = new buildSchema(`
 
   type Mutation {
 
-    signUp(username: String!, email: String!, password: String!): User
-    login(email: String!, password: String!): AuthData
     createTask(title: String!, description: String!): Task
     updateTask(id: ID!, title: String, description: String): Task
     deleteTask(id: ID!): Boolean
+    signUp(username: String!, email: String!, password: String!): User
+    login(email: String!, password: String!): AuthData
 
   }
 
 `);
 
-const appUser = new buildSchema(`
+// task storage in memory
+let appTasks = [];
 
-  ${AuthDataType}
-  ${RootQueryType}
-  ${MutationType}
-
-`);
-
-// express app set-up
-const app = express();
-app.use(cors());
-
+// graphql resolvers
 const root = {
 
-  tasks: () => tasks,
+  tasks: () => appTasks,
+  users: () => appUsers,
   createTask: ({ title, description }) => {
 
-    const newTask = { id: tasks.length + 1, title, description };
-    tasks.push(newTask);
+    const newTask = { id: appTasks.length + 1, title, description };
+    appTasks.push(newTask);
     return newTask;
 
   },
   updateTask: ({ id, title, description }) => {
 
-    const indexTask = tasks.findIndex((task) => task.id === parseInt(id));
+    const indexTask = appTasks.findIndex((task) => task.id === parseInt(id));
 
     if (indexTask !== -1) {
 
-      tasks[indexTask] = { ...tasks[indexTask], title, description };
-      return tasks[indexTask];
+      appTasks[indexTask] = { ...appTasks[indexTask], title, description };
+      return appTasks[indexTask];
 
     }
+
     return null;
 
   },
 
   deleteTask: ({ id }) => {
 
-    tasks = tasks.filter((task) => task.id !== parseInt(id));
+    appTasks = appTasks.filter((task) => task.id !== parseInt(id));
     return true;
 
   },
 
   signUp: async ({ username, email, password }) => {
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ username, email, password: hashedPassword });
-    await newUser.save();
-    return newUser;
+    // to check if email is registered
+    if (appUsers.some(user => user.email === email)) {
 
+      throw new Error('This email is already in use!');
+
+    }
+
+    // hashed password
+    const hashedPass = await bcrypt.hash(password, 10);
+
+    // new user creation
+    const userNew = { id: appUsers.length + 1, username, email, password: hashedPass };
+
+    // storing user in memory
+    appUsers.push(userNew);
+
+    return userNew;
   },
 
   login: async ({ email, password }) => {
 
-    const user = await User.findOne({ email });
+    // Finding the user by email
+    const user = appUsers.find(u => u.email === email);
+
     if (!user) {
 
-      throw new Error('User not found');
+      throw new Error('The given credentials are invalid!');
 
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    // For checking if the password provided matches stored hashed pass
+    const isValidPass = await bcrypt.compare(password, user.password);
 
-    if (!isPasswordValid) {
+    if (!isValidPass) {
 
-      throw new Error('Invalid password');
+      throw new Error('The given password is invalid!');
 
     }
 
-    const token = jwt.sign({ userId: user.id, email: user.email }, 'secret-key', {
+    // jwt token creation
+    const token = jwt.sign({ userId: user.id, email: user.email }, secretKey, { expiresIn: '1h' });
 
-      expiresIn: '1h',
-
-    });
-
-    return { userId: user.id, token, tokenExpiration: 3600 };
+    return { token, user };
   },
-
 };
 
-app.use('/graphql', graphqlHTTP({
-  schema: appUser,
-  rootValue: root,
-  graphiql: true,
+myTaskApp.use("/graphql", graphqlHTTP({ 
+  schema, 
+  rootValue: root, 
+  graphiql: true 
 }));
 
 const port = 3001;
-app.listen(port, () => {
-
-    console.log(`This server is running on http://localhost:${port}/graphql`);
-
+myTaskApp.listen(port, () => {
+  console.log(`This server is running on http://localhost:${port}/graphql`);
 });
