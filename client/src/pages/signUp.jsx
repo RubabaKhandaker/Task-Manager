@@ -23,7 +23,7 @@ const SignUp = ({ onSignUpSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const [signUp, { data }] = useMutation(SIGN_UP);
+  const [signUp] = useMutation(SIGN_UP);
 
   const handleSignUp = async () => {
 

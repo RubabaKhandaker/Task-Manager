@@ -27,7 +27,7 @@ const Login = ({ onLoginSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const [login, { data }] = useMutation(LOGIN);
+  const [login] = useMutation(LOGIN);
 
   const handleLogin = async () => {
 
