@@ -1,1 +1,1 @@
-web: node client/src/App.jsx
+web: npm run build && npm run start
