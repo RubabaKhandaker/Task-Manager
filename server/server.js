@@ -168,10 +168,10 @@ myTaskApp.use("/graphql", graphqlHTTP({
 }));
 
 if (process.env.NODE_ENV === 'production') {
-  myTaskApp.use(express.static(path.join(__dirname, '../client/dist')));
+  myTaskApp.use(express.static(path.join(__dirname, '../client/build')));
 
   myTaskApp.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
   });
 }
 
