@@ -1,1 +1,1 @@
-web: node server/server.js -t 180000
+web: node server/server.js
