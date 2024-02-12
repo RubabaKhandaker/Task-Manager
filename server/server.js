@@ -161,10 +161,6 @@ const root = {
   },
  }; */
 
- if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client/dist')));
-}
-
 myTaskApp.use("/graphql", graphqlHTTP({ 
   schema, 
   rootValue: root, 
