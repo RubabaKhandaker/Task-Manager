@@ -230,7 +230,7 @@ function App() {
 
                     <h1>Task about it!</h1>
 
-                    <h3>Welcome to your one-stop shop for task management, insert-user!</h3>
+                    <h3>Welcome to your one-stop shop for task management.</h3>
 
                  <div>
 
@@ -265,37 +265,55 @@ function App() {
                       <button onClick={handleTaskCreate}>Create!</button>
 
                   </div>
+
                     <div>
+
                       <h2>Your Tasks</h2>
+
                       <ul>
+
                         {data.tasks.map((task) => (
+
                           <li key={task.id}>
+
                             {task.title} - {task.description}
-                            <button onClick={() => handleTaskDelete(task.id)}>
-                              Delete!
-                            </button>
+
+                            <button onClick={() => handleTaskDelete(task.id)}>Delete!</button>
+
                             <button
+
                               onClick={() => {
+
                                 const updatedTitle = prompt(
+
                                   "Enter your new task title:",
                                   task.title
+
                                 );
                                 const updatedDescription = prompt(
+
                                   "Enter your new task description:",
                                   task.description
+
                                 );
                                 handleTaskUpdate(
+
                                   task.id,
                                   updatedTitle,
                                   updatedDescription
+
                                 );
+
                               }}
-                            >
-                              Update!
-                            </button>
+
+                            >Update!</button>
+
                           </li>
+
                         ))}
+
                       </ul>
+
                     </div>
 
                    </div>
