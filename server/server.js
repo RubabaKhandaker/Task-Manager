@@ -4,17 +4,17 @@ const { buildSchema } = require("graphql");
 const express = require("express");
 const { graphqlHTTP } = require("express-graphql");
 const cors = require("cors");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+// const bcrypt = require("bcrypt");
+// const jwt = require("jsonwebtoken");
 
 const myTaskApp = express();
 myTaskApp.use(cors());
 
 // user storage in memory
-const appUsers = [];
+// const appUsers = [];
 
 // jwt secret key & local port
-const secretKey = process.env.JWT_SECRET || 'default_secret';
+// const secretKey = process.env.JWT_SECRET || 'default_secret';
 const PORT = process.env.PORT || 3001;
 
 // graphql schemas
@@ -27,6 +27,24 @@ const schema = buildSchema(`
     description: String!
 
   }
+
+  type Query {
+
+    tasks: [Task]
+
+  }
+
+  type Mutation {
+
+    createTask(title: String!, description: String!): Task
+    updateTask(id: ID!, title: String, description: String): Task
+    deleteTask(id: ID!): Boolean
+
+  }
+
+`);
+
+/* Code meant to be used for sign-up, login, logout
 
   type User {
 
@@ -45,22 +63,18 @@ const schema = buildSchema(`
 
   type Query {
 
-    tasks: [Task]
     users: [User]
-
   }
 
   type Mutation {
 
-    createTask(title: String!, description: String!): Task
-    updateTask(id: ID!, title: String, description: String): Task
-    deleteTask(id: ID!): Boolean
     signUp(username: String!, email: String!, password: String!): User
     login(email: String!, password: String!): AuthData
 
-  }
+  } 
 
-`);
+*/
+
 
 // task storage in memory
 let appTasks = [];
@@ -69,7 +83,7 @@ let appTasks = [];
 const root = {
 
   tasks: () => appTasks,
-  users: () => appUsers,
+  // users: () => appUsers,
   createTask: ({ title, description }) => {
 
     const newTask = { id: appTasks.length + 1, title, description };
@@ -99,40 +113,40 @@ const root = {
 
   },
 
-  signUp: async ({ username, email, password }) => {
+  /* signUp: async ({ username, email, password }) => {
 
-    // to check if email is registered
-    if (appUsers.some(user => user.email === email)) {
+     to check if email is registered
+     if (appUsers.some(user => user.email === email)) {
 
       throw new Error('This email is already in use!');
 
     }
 
-    // hashed password
+     hashed password
     const hashedPass = await bcrypt.hash(password, 10);
 
-    // new user creation
+     new user creation
     const userNew = { id: appUsers.length + 1, username, email, password: hashedPass };
 
-    // storing user in memory
+     storing user in memory
     appUsers.push(userNew);
 
-    return userNew;
-  },
+     return userNew; */
+  };
 
-  login: async ({ email, password }) => {
+  /* login: async ({ email, password }) => {
 
-    // Finding the user by email
-    const user = appUsers.find(u => u.email === email);
+     Finding the user by email
+     const user = appUsers.find(u => u.email === email);
 
-    if (!user) {
+     if (!user) {
 
       throw new Error('The given credentials are invalid!');
 
-    }
+     }
 
-    // For checking if the password provided matches stored hashed pass
-    const isValidPass = await bcrypt.compare(password, user.password);
+     For checking if the password provided matches stored hashed pass
+     const isValidPass = await bcrypt.compare(password, user.password);
 
     if (!isValidPass) {
 
@@ -145,7 +159,7 @@ const root = {
 
     return { token, user };
   },
-};
+ }; */
 
 myTaskApp.use("/graphql", graphqlHTTP({ 
   schema, 
