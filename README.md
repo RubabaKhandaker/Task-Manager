@@ -19,6 +19,20 @@
     
 Open the [Task About It app]( https://rubabas-task-manager-a4515f92930f.herokuapp.com/) on a browser such as Google Chrome, Firefox or Edge etc.
 
+If this does not work, you may also clone this [GitHub Repo](https://github.com/RubabaKhandaker/Task-Manager) locally! After you've cloned the repo into an application such as Visual Studio Code, open the command terminal.
+
+In the command terminal, run `node server/server.js`
+
+![Screenshot of node command](./client/src/assets/node-server.png)
+
+Then, in the command terminal, run `cd client` to navigate to the client folder.
+
+![Screenshot of cd client](./client/src/assets/cd-client.png)
+
+After this, type `npm start` into the command terminal, and this should automatically open up the application to your local host in your default web browser!
+
+![Screenshot of npm start](./client/src/assets/npm%20start.png)
+
 ## Usage
 
 Once you have landed on the homepage, as visualised above, you may begin your task creation! You can do this by simply typing in a title and description for your tasks in their assigned fields, and click the "Create!" button to create your tasks.
