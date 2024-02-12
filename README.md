@@ -17,7 +17,7 @@
     
 ## Installation
     
-Open the [Task About It app]() on a browser such as Google Chrome, Firefox or Edge etc.
+Open the [Task About It app]( https://rubabas-task-manager-a4515f92930f.herokuapp.com/) on a browser such as Google Chrome, Firefox or Edge etc.
 
 ## Usage
 
