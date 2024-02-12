@@ -1,1 +1,1 @@
-web: node server/server.js && cd client && npm start
+web: node server/server.js && cd client && npm start -t 180000
