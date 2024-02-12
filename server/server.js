@@ -167,6 +167,14 @@ myTaskApp.use("/graphql", graphqlHTTP({
   graphiql: true 
 }));
 
+if (process.env.NODE_ENV === 'production') {
+  myTaskApp.use(express.static(path.join(__dirname, '../client/dist')));
+
+  myTaskApp.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+  });
+}
+
 myTaskApp.listen(PORT, () => {
   console.log(`This server is running on http://localhost:${PORT}/graphql`);
 });
