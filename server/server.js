@@ -13,8 +13,9 @@ myTaskApp.use(cors());
 // user storage in memory
 const appUsers = [];
 
-// jwt secret key
+// jwt secret key & local port
 const secretKey = process.env.JWT_SECRET || 'default_secret';
+const PORT = process.env.PORT || 3001;
 
 // graphql schemas
 const schema = buildSchema(`
@@ -152,7 +153,6 @@ myTaskApp.use("/graphql", graphqlHTTP({
   graphiql: true 
 }));
 
-const port = 3001;
-myTaskApp.listen(port, () => {
-  console.log(`This server is running on http://localhost:${port}/graphql`);
+myTaskApp.listen(PORT, () => {
+  console.log(`This server is running on http://localhost:${PORT}/graphql`);
 });

@@ -118,13 +118,12 @@
 
     "start": "node server/server.js --ignore client",
 		"develop": "concurrently \"cd server && npm run start\" \"cd client && npm run dev\"",
-		"install": "cd server && npm i && cd ../client && npm i",
-		"build": "cd client && npm run build",
+		"build": "cd client && npm start",
 		"preview":"concurrently \"cd server && npm run start\" \"cd client && npm run preview\"",
 		"render-build": "npm install && npm run build"
 
   },
   "author": "rubaba",
-  
+
   "license": "MIT"
 }
