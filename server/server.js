@@ -167,6 +167,8 @@ myTaskApp.use("/graphql", graphqlHTTP({
   graphiql: true 
 }));
 
+var path = require('path');
+
 if (process.env.NODE_ENV === 'production') {
   myTaskApp.use(express.static(path.join(__dirname, '../client/build')));
 
