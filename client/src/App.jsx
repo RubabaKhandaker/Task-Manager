@@ -221,10 +221,11 @@ function App() {
 
 const client = new ApolloClient({
 
-    uri: "http://localhost:3001/graphql",
+    uri: "https://rubabas-task-manager-a4515f92930f.herokuapp.com/graphql",
     cache: new InMemoryCache(),
 
 });
+
  
 
 function taskApp() {
